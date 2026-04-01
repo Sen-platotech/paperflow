@@ -286,6 +286,24 @@ class JournalSearcher:
                 Journal(name="EPJ Data Science", issn="2193-1127", publisher="Springer", sjr_score=2.8, h_index=45, rank=2),
                 Journal(name="Data Science Journal", issn="1683-1470", publisher="Ubiquity Press", sjr_score=0.8, h_index=28, rank=3),
             ],
+            "political science": [
+                Journal(name="American Political Science Review", issn="0003-0554", publisher="Cambridge University Press", sjr_score=5.8, h_index=185, rank=1),
+                Journal(name="American Journal of Political Science", issn="0092-5853", publisher="Midwest Political Science Association", sjr_score=4.5, h_index=125, rank=2),
+                Journal(name="Journal of Politics", issn="0022-3816", publisher="University of Chicago Press", sjr_score=3.8, h_index=115, rank=3),
+                Journal(name="World Politics", issn="0043-8871", publisher="Cambridge University Press", sjr_score=4.2, h_index=95, rank=4),
+                Journal(name="International Organization", issn="0020-8183", publisher="Cambridge University Press", sjr_score=5.5, h_index=145, rank=5),
+                Journal(name="Comparative Politics", issn="0010-4159", publisher="City University of New York", sjr_score=2.5, h_index=65, rank=6),
+                Journal(name="British Journal of Political Science", issn="0007-1234", publisher="Cambridge University Press", sjr_score=3.2, h_index=85, rank=7),
+                Journal(name="Political Theory", issn="0090-5944", publisher="SAGE", sjr_score=2.8, h_index=75, rank=8),
+            ],
+            "computational social science": [
+                Journal(name="Journal of Computational Social Science", issn="2435-4685", publisher="Springer", sjr_score=2.5, h_index=25, rank=1),
+                Journal(name="EPJ Data Science", issn="2193-1127", publisher="Springer", sjr_score=2.8, h_index=45, rank=2),
+                Journal(name="Journal of Artificial Societies and Social Simulation", issn="1460-7425", publisher="University of Surrey", sjr_score=1.8, h_index=55, rank=3),
+                Journal(name="Computational and Mathematical Organization Theory", issn="1381-298X", publisher="Springer", sjr_score=1.5, h_index=45, rank=4),
+                Journal(name="Social Networks", issn="0378-8733", publisher="Elsevier", sjr_score=2.2, h_index=95, rank=5),
+                Journal(name="Journal of Social Computing", issn="2770-4728", publisher="IEEE", sjr_score=0.8, h_index=8, rank=6),
+            ],
         }
 
         # Find matching category
