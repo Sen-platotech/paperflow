@@ -13,7 +13,7 @@ from .core.reporter import ReportGenerator
 from .core.storage import Storage
 from .core.translator import OllamaTranslator
 from .models import Article, Journal
-from .sources import CrossRefFetcher, RSSFetcher, SJRSearcher, display_journals_table, get_rss_url
+from .sources import CrossRefFetcher, JournalSearcher, RSSFetcher, display_journals_table, get_rss_url
 
 app = typer.Typer(
     name="paperflow",
@@ -33,13 +33,13 @@ app.add_typer(config_app, name="config")
 # --- Main commands ---
 @app.command()
 def search_journals(
-    query: str = typer.Argument(..., help="Search query (category or journal name)"),
+    query: str = typer.Argument(..., help="Search query (topic or journal name)"),
     top: int = typer.Option(20, "--top", "-n", help="Number of results"),
 ):
-    """Search for journals by category or name."""
-    searcher = SJRSearcher()
+    """Search for journals by topic or name."""
+    searcher = JournalSearcher()
     try:
-        journals = searcher.search_by_category(query, top)
+        journals = searcher.search_by_topic(query, top)
         if not journals:
             console.print("[yellow]No journals found. Try a different query.[/yellow]")
             return
