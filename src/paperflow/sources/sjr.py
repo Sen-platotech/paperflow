@@ -42,7 +42,7 @@ class JournalSearcher:
 
         # Check preset first for known categories
         preset = self._get_preset_journals(topic, top_n)
-        if preset and any(self._match_category(topic, key) for key in self._get_preset_keys()):
+        if preset:
             console.print(f"[green]Found {len(preset)} top journals from database[/green]")
             return preset[:top_n]
 
@@ -50,27 +50,20 @@ class JournalSearcher:
         journals = self._search_crossref(topic, top_n)
 
         if not journals:
-            # Fallback to preset
-            console.print("[yellow]CrossRef search returned no results, using related journals...[/yellow]")
-            journals = preset
+            # Fallback to AI journals
+            console.print("[yellow]No journals found, showing AI journals as reference...[/yellow]")
+            journals = self._get_default_journals(top_n)
 
         console.print(f"[green]Found {len(journals)} journals[/green]")
         return journals[:top_n]
 
-    def _get_preset_keys(self) -> list[str]:
-        """Return list of preset category keys."""
+    def _get_default_journals(self, top_n: int) -> list[Journal]:
+        """Return default AI journals when no match found."""
         return [
-            "artificial intelligence", "machine learning", "natural language processing",
-            "computer vision", "robotics", "bioinformatics", "neuroscience",
-            "quantum", "climate", "materials science"
-        ]
-
-    def _match_category(self, query: str, category: str) -> bool:
-        """Check if query matches a category."""
-        query_lower = query.lower()
-        category_lower = category.lower()
-        return query_lower in category_lower or category_lower in query_lower or \
-               any(word in query_lower for word in category_lower.split())
+            Journal(name="Nature Machine Intelligence", issn="2522-5839", publisher="Springer Nature"),
+            Journal(name="Journal of Machine Learning Research", issn="1532-4435", publisher="JMLR"),
+            Journal(name="IEEE TPAMI", issn="0162-8828", publisher="IEEE"),
+        ][:top_n]
 
     def _search_crossref(self, query: str, limit: int) -> list[Journal]:
         """Search journals via CrossRef API."""
@@ -302,7 +295,9 @@ class JournalSearcher:
 
         # Try to find partial match
         for key, journals in presets.items():
-            if any(word in category_lower for word in key.split()) or any(word in key for word in category_lower.split()):
+            key_words = key.split()
+            category_words = category_lower.split()
+            if any(word in category_lower for word in key_words) or any(word in key for word in category_words):
                 return journals[:top_n]
 
         # No match - return empty list (will trigger CrossRef search)
