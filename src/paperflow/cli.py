@@ -12,6 +12,7 @@ from .config import get_settings, load_settings, save_settings
 from .core.reporter import ReportGenerator
 from .core.storage import Storage
 from .core.translator import OllamaTranslator
+from .core.summarizer import ArticleSummarizer, PDFDownloader
 from .models import Article, Journal
 from .sources import CrossRefFetcher, JournalSearcher, RSSFetcher, display_journals_table, get_rss_url
 
@@ -185,6 +186,119 @@ def list_articles(
 
     console.print(table)
     console.print(f"\nTotal: {len(articles)} articles")
+
+
+@app.command()
+def summarize(
+    days: int = typer.Option(7, "--days", "-d", help="Days to look back"),
+    fulltext: bool = typer.Option(False, "--fulltext", "-f", help="Download PDFs and summarize full text"),
+    limit: int = typer.Option(10, "--limit", "-l", help="Maximum articles to summarize"),
+):
+    """
+    Generate AI summaries for articles.
+
+    By default, summarizes based on title and abstract.
+    Use --fulltext to download PDFs and summarize full text (slower).
+    """
+    settings = load_settings()
+    storage = Storage(settings.database_path)
+
+    # Get unsummarized articles
+    unsummarized = storage.get_unsummarized_articles()
+
+    if not unsummarized:
+        console.print("[green]All articles have been summarized.[/green]")
+        return
+
+    # Limit
+    articles_to_summarize = unsummarized[:limit]
+
+    console.print(f"[cyan]Summarizing {len(articles_to_summarize)} articles...[/cyan]")
+
+    # Initialize summarizer
+    summarizer = ArticleSummarizer(
+        model=settings.ollama_model,
+        host=settings.ollama_host,
+    )
+
+    if not summarizer.check_connection():
+        console.print("[red]Ollama not available. Make sure Ollama is running.[/red]")
+        raise typer.Exit(1)
+
+    # PDF downloader for fulltext mode
+    pdf_downloader = None
+    if fulltext:
+        pdf_dir = settings.data_dir / "pdfs"
+        pdf_downloader = PDFDownloader(pdf_dir)
+
+    # Process each article
+    for i, article in enumerate(articles_to_summarize, 1):
+        console.print(f"\n[{i}/{len(articles_to_summarize)}] {article.title[:60]}...")
+
+        fulltext_content = None
+
+        # Download and extract PDF if fulltext mode
+        if fulltext and pdf_downloader and article.pdf_url:
+            console.print("  [dim]Downloading PDF...[/dim]")
+            filename = f"{article.doi or article.id}.pdf".replace("/", "_")
+            pdf_path = pdf_downloader.download_pdf(article.pdf_url, filename)
+
+            if pdf_path:
+                storage.update_article_pdf_path(article.id, str(pdf_path))
+                fulltext_content = pdf_downloader.extract_text(pdf_path)
+                if fulltext_content:
+                    console.print(f"  [dim]Extracted {len(fulltext_content)} characters[/dim]")
+
+        # Generate summary
+        if fulltext_content:
+            summary = summarizer.summarize_fulltext(fulltext_content, article.title)
+        else:
+            summary = summarizer.summarize_abstract(article.title, article.abstract or "")
+
+        if summary:
+            storage.update_article_summary(article.id, summary, None)
+            console.print(f"  [green]✓ Summary generated[/green]")
+        else:
+            console.print(f"  [yellow]✗ Failed to generate summary[/yellow]")
+
+    if pdf_downloader:
+        pdf_downloader.close()
+
+    console.print(f"\n[green]Summarization complete![/green]")
+
+
+@app.command()
+def download_pdf(
+    article_id: int = typer.Argument(..., help="Article ID"),
+):
+    """Download PDF for a specific article."""
+    settings = load_settings()
+    storage = Storage(settings.database_path)
+
+    article = storage.get_article_by_id(article_id)
+    if not article:
+        console.print(f"[red]Article not found: {article_id}[/red]")
+        raise typer.Exit(1)
+
+    if not article.pdf_url:
+        console.print("[red]This article has no PDF URL available.[/red]")
+        raise typer.Exit(1)
+
+    pdf_dir = settings.data_dir / "pdfs"
+    downloader = PDFDownloader(pdf_dir)
+
+    filename = f"{article.doi or article.id}.pdf".replace("/", "_")
+    console.print(f"[cyan]Downloading PDF for: {article.title[:50]}...[/cyan]")
+
+    pdf_path = downloader.download_pdf(article.pdf_url, filename)
+
+    if pdf_path:
+        storage.update_article_pdf_path(article.id, str(pdf_path))
+        console.print(f"[green]PDF saved to: {pdf_path}[/green]")
+    else:
+        console.print("[red]Failed to download PDF.[/red]")
+
+    downloader.close()
 
 
 # --- Subscribe commands ---

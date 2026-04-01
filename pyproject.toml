@@ -18,6 +18,9 @@ dependencies = [
     "ollama>=0.1.0",
 ]
 
+[project.optional-dependencies]
+pdf = ["pymupdf>=1.24.0"]
+
 [project.scripts]
 paperflow = "paperflow.cli:app"
 

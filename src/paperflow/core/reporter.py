@@ -141,6 +141,12 @@ class ReportGenerator:
             lines.append(f"> {article.abstract_zh}")
             lines.append("")
 
+        # AI Summary
+        if article.summary:
+            lines.append("**🤖 AI总结:**")
+            lines.append(f"> {article.summary}")
+            lines.append("")
+
         # Links
         links = []
         if article.url:

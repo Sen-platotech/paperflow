@@ -44,17 +44,21 @@ class ArticleDB(Base):
     title_zh: Mapped[Optional[str]] = mapped_column(Text)
     abstract: Mapped[Optional[str]] = mapped_column(Text)
     abstract_zh: Mapped[Optional[str]] = mapped_column(Text)
+    summary: Mapped[Optional[str]] = mapped_column(Text)
+    summary_zh: Mapped[Optional[str]] = mapped_column(Text)
     authors: Mapped[Optional[str]] = mapped_column(JSON)  # List as JSON
     affiliations: Mapped[Optional[str]] = mapped_column(JSON)  # List as JSON
     doi: Mapped[Optional[str]] = mapped_column(String(100), index=True)
     url: Mapped[Optional[str]] = mapped_column(String(500))
     pdf_url: Mapped[Optional[str]] = mapped_column(String(500))
+    pdf_path: Mapped[Optional[str]] = mapped_column(String(500))
     published_date: Mapped[Optional[date]] = mapped_column(Date, index=True)
     journal_issn: Mapped[str] = mapped_column(String(20), index=True)
     journal_name: Mapped[Optional[str]] = mapped_column(String(500))
     source: Mapped[str] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     translated_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    summarized_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
 
 class Storage:
@@ -66,7 +70,28 @@ class Storage:
         self._ensure_tables()
 
     def _ensure_tables(self) -> None:
-        """Create tables if they don't exist."""
+        """Create tables if they don't exist and run migrations."""
+        import sqlite3
+
+        # Run migrations first using raw sqlite3
+        migrations = [
+            "ALTER TABLE articles ADD COLUMN summary TEXT",
+            "ALTER TABLE articles ADD COLUMN summary_zh TEXT",
+            "ALTER TABLE articles ADD COLUMN pdf_path VARCHAR(500)",
+            "ALTER TABLE articles ADD COLUMN summarized_at DATETIME",
+        ]
+
+        db_path = str(self.engine.url).replace("sqlite:///", "")
+        conn = sqlite3.connect(db_path)
+        for alter_sql in migrations:
+            try:
+                conn.execute(alter_sql)
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+        conn.commit()
+        conn.close()
+
+        # Now create any missing tables
         Base.metadata.create_all(self.engine)
 
     # Journal operations
@@ -177,6 +202,38 @@ class Storage:
                 article.abstract_zh = abstract_zh
                 article.translated_at = datetime.now()
                 session.commit()
+
+    def get_unsummarized_articles(self) -> list[ArticleDB]:
+        """Get articles that haven't been summarized yet."""
+        with Session(self.engine) as session:
+            return list(
+                session.execute(select(ArticleDB).where(ArticleDB.summarized_at == None)).scalars().all()
+            )
+
+    def update_article_summary(
+        self, article_id: int, summary: str, summary_zh: Optional[str]
+    ) -> None:
+        """Update article with AI summary."""
+        with Session(self.engine) as session:
+            article = session.get(ArticleDB, article_id)
+            if article:
+                article.summary = summary
+                article.summary_zh = summary_zh
+                article.summarized_at = datetime.now()
+                session.commit()
+
+    def update_article_pdf_path(self, article_id: int, pdf_path: str) -> None:
+        """Update article with local PDF path."""
+        with Session(self.engine) as session:
+            article = session.get(ArticleDB, article_id)
+            if article:
+                article.pdf_path = pdf_path
+                session.commit()
+
+    def get_article_by_id(self, article_id: int) -> Optional[ArticleDB]:
+        """Get an article by ID."""
+        with Session(self.engine) as session:
+            return session.get(ArticleDB, article_id)
 
     def get_articles_grouped_by_journal(
         self, start_date: Optional[date] = None, end_date: Optional[date] = None

@@ -14,17 +14,21 @@ class Article(BaseModel):
     title_zh: Optional[str] = Field(None, description="Translated Chinese title")
     abstract: Optional[str] = Field(None, description="Abstract (original)")
     abstract_zh: Optional[str] = Field(None, description="Translated Chinese abstract")
+    summary: Optional[str] = Field(None, description="AI-generated summary")
+    summary_zh: Optional[str] = Field(None, description="AI-generated Chinese summary")
     authors: list[str] = Field(default_factory=list, description="Author names")
     affiliations: list[str] = Field(default_factory=list, description="Author affiliations")
     doi: Optional[str] = Field(None, description="DOI identifier")
     url: Optional[str] = Field(None, description="Article URL")
     pdf_url: Optional[str] = Field(None, description="PDF URL")
+    pdf_path: Optional[str] = Field(None, description="Local PDF file path")
     published_date: Optional[date] = Field(None, description="Publication date")
     journal_issn: str = Field(..., description="ISSN of the journal")
     journal_name: Optional[str] = Field(None, description="Journal name")
     source: str = Field(default="unknown", description="Data source (crossref, rss, etc.)")
     created_at: datetime = Field(default_factory=datetime.now)
     translated_at: Optional[datetime] = Field(None, description="Translation timestamp")
+    summarized_at: Optional[datetime] = Field(None, description="Summary timestamp")
 
     model_config = {
         "json_schema_extra": {
