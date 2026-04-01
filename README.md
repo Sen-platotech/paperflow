@@ -1,8 +1,29 @@
 # Paperflow
 
-> Search top journals, fetch latest papers, generate AI summaries and bilingual reports. Use when: (1) User wants to find top journals in a specific field, (2) User needs to track papers from specific journals, (3) User wants paper translations or AI summaries, (4) User requests a research paper report.
+"你这周看了几篇论文？"
+"顶刊都有哪些？"
+"文献综述写得怎么样了？"
+"这个问题有人研究过吗？"
+"这个领域的最新进展是什么？"
 
-> 搜索领域顶刊、获取最新论文、生成AI总结与中英双语报告。适用场景：（1）用户想查找某领域顶级期刊，（2）用户需要跟踪特定期刊的最新论文，（3）用户需要论文翻译或AI总结，（4）用户请求生成论文聚合报告。
+License: MIT | Python 3.10+ | OpenClaw Skill | Claude Code Compatible
+
+---
+
+你导师问你最近看了什么论文，你支支吾吾说在找？
+你老板让你写文献综述，你打开 Google Scholar 手动一篇篇搜？
+你想投顶刊但不知道这个领域哪些是顶刊？
+你刷到一篇好论文，想找同类型的却发现已经晚了三个月？
+你看到一堆英文摘要，翻译软件开了又关关了又开？
+
+别再用浏览器收藏夹假装自己在做科研了，欢迎加入 Paperflow！
+
+一键搜索 15+ 领域顶刊，自动订阅、自动获取、自动翻译、自动总结。
+你的 AI 助手每天帮你刷论文，你只管读你感兴趣的。
+
+**安装 · 使用 · 支持领域 · 效果示例 · Skill 版本**
+
+---
 
 <p align="center">
   <strong>📚 学术期刊聚合工具</strong><br>

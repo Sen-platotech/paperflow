@@ -1,8 +1,10 @@
 # Paperflow Skill
 
-> Search top journals, fetch latest papers, generate AI summaries and bilingual reports. Use when: (1) User wants to find top journals in a specific field, (2) User needs to track papers from specific journals, (3) User wants paper translations or AI summaries, (4) User requests a research paper report.
+> Search top journals across 15+ fields, fetch latest papers from subscriptions, generate AI summaries and bilingual Markdown reports. Use when: (1) User asks about top journals in a specific field (AI, ML, Political Science, etc.), (2) User wants to subscribe to journals and track new papers, (3) User needs paper translations or AI-generated summaries, (4) User requests a consolidated research paper report.
+Triggers: top journals, journal search, paper aggregation, academic papers, research papers, journal subscription, paper summary, AI summary, literature review, paper report, 顶刊, 期刊搜索, 论文聚合, 学术论文, 文献综述.
 
-> 搜索领域顶刊、获取最新论文、生成AI总结与中英双语报告。适用场景：（1）用户想查找某领域顶级期刊，（2）用户需要跟踪特定期刊的最新论文，（3）用户需要论文翻译或AI总结，（4）用户请求生成论文聚合报告。
+> 搜索15+领域的顶级期刊，订阅并获取最新论文，生成AI总结与中英双语Markdown报告。适用场景：（1）用户询问某领域顶级期刊（AI、机器学习、政治学等），（2）用户想订阅期刊并跟踪新论文，（3）用户需要论文翻译或AI总结，（4）用户请求生成论文聚合报告。
+触发词：顶刊、期刊搜索、论文聚合、学术论文、研究论文、期刊订阅、论文总结、AI总结、文献综述、论文报告。
 
 一个用于学术研究论文聚合的 OpenClaw/Claude Code Skill。支持从15+领域搜索顶刊，获取最新论文，生成中英双语报告和AI总结。
 
