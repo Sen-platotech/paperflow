@@ -1,12 +1,9 @@
 # Paperflow
 
-"你这周看了几篇论文？"
-"顶刊都有哪些？"
-"文献综述写得怎么样了？"
-"这个问题有人研究过吗？"
-"这个领域的最新进展是什么？"
-
-License: MIT | Python 3.10+ | OpenClaw Skill | Claude Code Compatible
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://python.org)
+[![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-blueviolet)](https://openclaw.ai)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-green)](https://claude.ai/code)
 
 ---
 
@@ -22,13 +19,6 @@ License: MIT | Python 3.10+ | OpenClaw Skill | Claude Code Compatible
 你的 AI 助手每天帮你刷论文，你只管读你感兴趣的。
 
 **安装 · 使用 · 支持领域 · 效果示例 · Skill 版本**
-
----
-
-<p align="center">
-  <strong>📚 学术期刊聚合工具</strong><br>
-  <sub>搜索顶刊 · 获取论文 · AI总结 · 双语报告</sub>
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python">
